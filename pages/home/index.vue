@@ -20,7 +20,7 @@
     <view class="actions">
       <button @click="viewHistory">查看历史检测记录</button>
       <button @click="viewPdfReport">查看PDF报告</button>
-      <!-- <button @click="goToAIChat">AI心理治疗师</button> -->
+     <!-- <button @click="goToAIChat">AI心理治疗师</button> -->
 	  <button @click="handleGetUserinfo">请求按钮</button>
     </view>
 	<div id="ai-chat"></div>
@@ -36,7 +36,6 @@ export default {
     return {
       userInfo: null,
       loading: true,
-	   cozeClient: null, // 用于存储AI智能体实例
     };
   },
  //  onLoad() {
@@ -44,9 +43,8 @@ export default {
  //    this.initializeAuth();
  //  },
   mounted() {
-	this.initAIChatSDK();
+  	this.initAIChatSDK();
   },
- 
   methods: {
     async initializeAuth() {
       try {
@@ -120,8 +118,7 @@ export default {
 	//     url: '/pages/aiChat/aiChat'
 	//   });
 	// },
-
-    initAIChatSDK() {
+initAIChatSDK() {
       if (!window.CozeWebSDK) {
         const script = document.createElement('script');
         script.src = 'https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.6/libs/cn/index.js';
@@ -153,7 +150,7 @@ export default {
         }
       });
     }
-
+	
   },
 };
 </script>

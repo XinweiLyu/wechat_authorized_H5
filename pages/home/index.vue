@@ -20,7 +20,7 @@
     <view class="actions">
       <button @click="viewHistory">查看历史检测记录</button>
       <button @click="viewPdfReport">查看PDF报告</button>
-     <!-- <button @click="goToAIChat">AI心理治疗师</button> -->
+      <!-- <button @click="goToAIChat">AI心理治疗师</button> -->
 	  <button @click="handleGetUserinfo">请求按钮</button>
     </view>
 	<div id="ai-chat"></div>
@@ -36,15 +36,17 @@ export default {
     return {
       userInfo: null,
       loading: true,
+	   // cozeClient: null, // 用于存储AI智能体实例
     };
   },
  //  onLoad() {
 	// //验证微信可无端打开
  //    this.initializeAuth();
  //  },
-  mounted() {
-  	this.initAIChatSDK();
-  },
+ //  mounted() {
+	// // this.initAIChatSDK();
+ //  },
+ 
   methods: {
     async initializeAuth() {
       try {
@@ -106,7 +108,6 @@ export default {
 		  getUserInfo(code);
 	  },
 	  
-	
 	// showAIChat() {
 	//   // 此方法已废弃，不再使用
 	// },
@@ -118,39 +119,40 @@ export default {
 	//     url: '/pages/aiChat/aiChat'
 	//   });
 	// },
-initAIChatSDK() {
-      if (!window.CozeWebSDK) {
-        const script = document.createElement('script');
-        script.src = 'https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.6/libs/cn/index.js';
-        script.onload = () => {
-          this.initAIChat();
-        };
-        document.body.appendChild(script);
-      } else {
-        this.initAIChat();
-      }
-    },
-    initAIChat() {
-      if (this.cozeClient) {
-        return;
-      }
-      this.cozeClient = new window.CozeWebSDK.WebChatClient({
-        config: {
-          bot_id: '7508678239494193206',
-        },
-        componentProps: {
-          title: '心理治疗师',
-        },
-        auth: {
-          type: 'token',
-          token: 'pat_cdJe9GXVojOlk9W1pXL8lAbxUZj0Q3R4N2jpGaYzgbnr0saxy1N8E3RHDne0kcum',
-          onRefreshToken: function () {
-            return 'pat_cdJe9GXVojOlk9W1pXL8lAbxUZj0Q3R4N2jpGaYzgbnr0saxy1N8E3RHDne0kcum';
-          }
-        }
-      });
-    }
-	
+
+    // initAIChatSDK() {
+    //   if (!window.CozeWebSDK) {
+    //     const script = document.createElement('script');
+    //     script.src = 'https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.6/libs/cn/index.js';
+    //     script.onload = () => {
+    //       this.initAIChat();
+    //     };
+    //     document.body.appendChild(script);
+    //   } else {
+    //     this.initAIChat();
+    //   }
+    // },
+    // initAIChat() {
+    //   if (this.cozeClient) {
+    //     return;
+    //   }
+    //   this.cozeClient = new window.CozeWebSDK.WebChatClient({
+    //     config: {
+    //       bot_id: '7508678239494193206',
+    //     },
+    //     componentProps: {
+    //       title: '心理治疗师',
+    //     },
+    //     auth: {
+    //       type: 'token',
+    //       token: 'pat_cdJe9GXVojOlk9W1pXL8lAbxUZj0Q3R4N2jpGaYzgbnr0saxy1N8E3RHDne0kcum',
+    //       onRefreshToken: function () {
+    //         return 'pat_cdJe9GXVojOlk9W1pXL8lAbxUZj0Q3R4N2jpGaYzgbnr0saxy1N8E3RHDne0kcum';
+    //       }
+    //     }
+    //   });
+    // }
+
   },
 };
 </script>

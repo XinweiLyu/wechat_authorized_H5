@@ -7,6 +7,9 @@
     "uni-app-x" : {},
     /* 快应用特有相关 */
     "quickapp" : {},
+	"h5": {
+	 "content-security-policy": "default-src *; script-src 'self' 'unsafe-eval' 'unsafe-inline' *.dify.dev *.dify.ai *.udify.app;"
+	},
     /* 小程序特有相关 */
     "mp-weixin" : {
         "appid" : "你的微信小程序appid",

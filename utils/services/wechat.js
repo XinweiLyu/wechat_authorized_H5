@@ -90,10 +90,10 @@ export async function wechatAuth() {
 
     try {
         // 使用code获取access_token和用户信息
-        const tokenResponse = await get(config.api.getAccessToken, { code }); 
+        const tokenResponse = await get(config.api.getAccessToken, { code }); // 获取code
         // 保存用户信息
         console.log(tokenResponse.openid, 'tokenResponse');
-        localStorage.setItem('token', tokenResponse.openid);
+        localStorage.setItem('token', tokenResponse.openid); // 赋值
 
         saveUserInfo(tokenResponse);
         return tokenResponse;
@@ -104,4 +104,5 @@ export async function wechatAuth() {
     }
 }
 
-export { getUrlParams }; 
+export { getUrlParams };
+

@@ -21,32 +21,61 @@
       <button @click="viewHistory">查看历史检测记录</button>
       <button @click="viewPdfReport">查看PDF报告</button>
       <!-- <button @click="goToAIChat">AI心理治疗师</button> -->
-	  <button @click="handleGetUserinfo">请求按钮</button>
+      <button @click="handleGetUserinfo">请求按钮</button>
+      <!-- <button @click="goToDifyChatbot">Dify 聊天机器人</button> -->
     </view>
-	<div id="ai-chat"></div>
+    <div id="ai-chat"></div>
+    <view v-if="reportList.length">
+      <view v-for="item in reportList" :key="item.id" class="report-card">
+        <view>{{ item.name }}</view>
+        <view>机构：{{ item.company }}</view>
+        <view>{{ item.time }}</view>
+        <button @click="viewReport(item)">查看报告</button>
+      </view>
+    </view>
   </view>
 </template>
 
 <script>
 import { getUserInfo } from '../../api/userInfo';
-import { wechatAuth, getStoredUserInfo, getUrlParams } from '../../utils/services/wechat';
+import {
+  wechatAuth,
+  getStoredUserInfo,
+  getUrlParams,
+} from '../../utils/services/wechat';
+// import { getReportList,getReportPdf } from '../../utils/request/report'
 
 export default {
   data() {
     return {
       userInfo: null,
       loading: true,
-	   cozeClient: null, // 用于存储AI智能体实例
+      reportList: [],
+      // cozeClient: null, // 用于存储AI智能体实例
     };
   },
- //  onLoad() {
-	// //验证微信可无端打开
- //    this.initializeAuth();
- //  },
-  mounted() {
-	this.initAIChatSDK();
+  onLoad() {
+    //this.initializeAuth();
+    // this.fetchReportList(); // 新增：获取报告列表
   },
- 
+
+  //  mounted() {
+  // // this.initAIChatSDK();
+  //  },
+
+  // mounted() {
+  //   // Dify Chatbot 配置与脚本动态加载
+  //   window.difyChatbotConfig = {
+  //     token: 'Ocbye00VUm4GiKGw',
+  //     baseUrl: 'http://127.0.0.1'
+  //   };
+  //   const script = document.createElement('script');
+  //   script.src = 'http://127.0.0.1/embed.min.js';
+  //   script.id = 'Ocbye00VUm4GiKGw';
+  //   script.defer = true;
+  //   document.body.appendChild(script);
+  // },
+
   methods: {
     async initializeAuth() {
       try {
@@ -76,88 +105,114 @@ export default {
         this.loading = false;
       }
     },
+
     viewHistory() {
       uni.navigateTo({
-        url: '/pages/index/historyRecords/historyRecords',
+        url: '/pages/patient/history',
       });
     },
-	
-    viewPdfReport() {
-      // 实现查看PDF报告的逻辑
-      uni.showToast({
-        title: '功能开发中',
-        icon: 'none',
-      });
-    },
-	// viewPdfReport() {
-	//     // 使用本地PDF文件作为占位符
-	//     const filePath = '/static/report.pdf';
-	//     wx.openDocument({
-	//       filePath: filePath,
-	//       success: function (res) {
-	//         console.log('打开文档成功');
-	//       },
-	//       fail: function (err) {
-	//         console.error('打开文档失败', err);
-	//       }
-	//     });
-	//   },
-	  
-	  handleGetUserinfo(){
-		  const { code } = getUrlParams();
-		  getUserInfo(code);
-	  },
-	  
-	
-	// showAIChat() {
-	//   // 此方法已废弃，不再使用
-	// },
-	// initAIChat() {
-	//   // 此方法已废弃，不再使用
-	// },
-	// goToAIChat() {
-	//   uni.navigateTo({
-	//     url: '/pages/aiChat/aiChat'
-	//   });
-	// },
+    // viewHistory() {
+    //   uni.navigateTo({
+    //     url: '/pages/index/historyRecords/historyRecords',
+    //   });
+    // },
 
-    initAIChatSDK() {
-      if (!window.CozeWebSDK) {
-        const script = document.createElement('script');
-        script.src = 'https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.6/libs/cn/index.js';
-        script.onload = () => {
-          this.initAIChat();
-        };
-        document.body.appendChild(script);
-      } else {
-        this.initAIChat();
-      }
+    // viewPdfReport() {
+    //   // 实现查看PDF报告的逻辑
+    //   uni.showToast({
+    //     title: '功能开发中',
+    //     icon: 'none',
+    //   });
+    // },
+    // viewPdfReport() {
+    //     // 使用本地PDF文件作为占位符
+    //     const filePath = '/static/report.pdf';
+    //     wx.openDocument({
+    //       filePath: filePath,
+    //       success: function (res) {
+    //         console.log('打开文档成功');
+    //       },
+    //       fail: function (err) {
+    //         console.error('打开文档失败', err);
+    //       }
+    //     });
+    //   },
+
+    handleGetUserinfo() {
+      const { code } = getUrlParams();
+      getUserInfo(code);
     },
-    initAIChat() {
-      if (this.cozeClient) {
-        return;
-      }
-      this.cozeClient = new window.CozeWebSDK.WebChatClient({
-        config: {
-          bot_id: '7508678239494193206',
-        },
-        componentProps: {
-          title: '心理治疗师',
-        },
-        auth: {
-          type: 'token',
-          token: 'pat_cdJe9GXVojOlk9W1pXL8lAbxUZj0Q3R4N2jpGaYzgbnr0saxy1N8E3RHDne0kcum',
-          onRefreshToken: function () {
-            return 'pat_cdJe9GXVojOlk9W1pXL8lAbxUZj0Q3R4N2jpGaYzgbnr0saxy1N8E3RHDne0kcum';
-          }
+
+    // showAIChat() {
+    //   // 此方法已废弃，不再使用
+    // },
+    // initAIChat() {
+    //   // 此方法已废弃，不再使用
+    // },
+    // goToAIChat() {
+    //   uni.navigateTo({
+    //     url: '/pages/aiChat/aiChat'
+    //   });
+    // },
+
+    // initAIChatSDK() {
+    //   if (!window.CozeWebSDK) {
+    //     const script = document.createElement('script');
+    //     script.src = 'https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.6/libs/cn/index.js';
+    //     script.onload = () => {
+    //       this.initAIChat();
+    //     };
+    //     document.body.appendChild(script);
+    //   } else {
+    //     this.initAIChat();
+    //   }
+    // },
+    // initAIChat() {
+    //   if (this.cozeClient) {
+    //     return;
+    //   }
+    //   this.cozeClient = new window.CozeWebSDK.WebChatClient({
+    //     config: {
+    //       bot_id: '7508678239494193206',
+    //     },
+    //     componentProps: {
+    //       title: '心理治疗师',
+    //     },
+    //     auth: {
+    //       type: 'token',
+    //       token: 'pat_cdJe9GXVojOlk9W1pXL8lAbxUZj0Q3R4N2jpGaYzgbnr0saxy1N8E3RHDne0kcum',
+    //       onRefreshToken: function () {
+    //         return 'pat_cdJe9GXVojOlk9W1pXL8lAbxUZj0Q3R4N2jpGaYzgbnr0saxy1N8E3RHDne0kcum';
+    //       }
+    //     }
+    //   });
+    // }
+
+    // goToDifyChatbot() {
+    //   uni.navigateTo({
+    //     url: '/pages/dify/dify'
+    //   });
+    // },
+
+    async fetchReportList() {
+      try {
+        const res = await getReportList();
+        if (res.code === 200) {
+          this.reportList = Object.values(res.data);
         }
-      });
-    }
+      } catch (e) {
+        uni.showToast({ title: '获取报告失败', icon: 'none' });
+      }
+    },
 
+    viewReport(item) {
+      window.open(
+        `http://22c4da7.r9.cpolar.top/report/wechat-export/?report_id=${item.id}`
+      );
+    },
   },
 };
 </script>
-
 
 <style>
 .header {
@@ -230,5 +285,21 @@ button {
 
 button:active {
   opacity: 0.8;
+}
+
+#dify-chatbot-bubble-button {
+  background-color: #1c64f2 !important;
+}
+#dify-chatbot-bubble-window {
+  width: 24rem !important;
+  height: 40rem !important;
+}
+
+.report-card {
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 8px #eee;
 }
 </style>

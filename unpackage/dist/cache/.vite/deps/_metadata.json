@@ -1,15 +1,49 @@
 {
-  "hash": "6c9718f3",
-  "configHash": "29d8fb24",
-  "lockfileHash": "c8817532",
-  "browserHash": "7c4cfd0a",
+  "hash": "33ca3e54",
+  "configHash": "5b514ff4",
+  "lockfileHash": "44bbb888",
+  "browserHash": "5adb4290",
   "optimized": {
+    "pdfjs-dist/build/pdf.worker": {
+      "src": "../../../../../node_modules/pdfjs-dist/build/pdf.worker.js",
+      "file": "pdfjs-dist_build_pdf__worker.js",
+      "fileHash": "289a3264",
+      "needsInterop": true
+    },
     "axios": {
       "src": "../../../../../node_modules/axios/index.js",
       "file": "axios.js",
-      "fileHash": "a67d0aa5",
+      "fileHash": "30892021",
       "needsInterop": false
+    },
+    "pdfjs-dist/build/pdf": {
+      "src": "../../../../../node_modules/pdfjs-dist/build/pdf.js",
+      "file": "pdfjs-dist_build_pdf.js",
+      "fileHash": "d72b6422",
+      "needsInterop": true
+    },
+    "pdfjs-dist": {
+      "src": "../../../../../node_modules/pdfjs-dist/build/pdf.js",
+      "file": "pdfjs-dist.js",
+      "fileHash": "a390bda4",
+      "needsInterop": true
+    },
+    "pdfjs-dist/build/pdf.worker.entry.js": {
+      "src": "../../../../../node_modules/pdfjs-dist/build/pdf.worker.entry.js",
+      "file": "pdfjs-dist_build_pdf__worker__entry__js.js",
+      "fileHash": "c056717d",
+      "needsInterop": true
     }
   },
-  "chunks": {}
+  "chunks": {
+    "chunk-4BR27ODY": {
+      "file": "chunk-4BR27ODY.js"
+    },
+    "chunk-C5BBD7QD": {
+      "file": "chunk-C5BBD7QD.js"
+    },
+    "chunk-34Z2WVG2": {
+      "file": "chunk-34Z2WVG2.js"
+    }
+  }
 }

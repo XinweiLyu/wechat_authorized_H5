@@ -2,7 +2,7 @@
 const env = {
 	// 开发环境
     development: {
-        baseURL: 'http://4c3bad39.r9.cpolar.top'
+        baseURL: 'http://277fbfd6.cpolar.top'
     },
 	// 线上环境
     production: {

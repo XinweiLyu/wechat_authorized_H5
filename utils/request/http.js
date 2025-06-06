@@ -39,7 +39,7 @@ instance.interceptors.response.use(
         const data = response.data;
         if (data.code === 200) { // 请求成功
             return data.data; // 返回实际的数据部分
-        } else { // 添加 401 ,xxxxxx,xxx,xxx
+        }  else { // 添加 401 ,xxxxxx,xxx,xxx
             // 处理业务逻辑错误
             console.error('API Error:', data.message);
             return Promise.reject(new Error(data.message));
@@ -53,9 +53,9 @@ instance.interceptors.response.use(
 );
 
 // 封装 GET 请求
-export function get(url, params) {
+export function get(url, params, options = {}) {
     console.log(url, params, 'params');
-    return instance.get(url, { params });
+    return instance.get(url, { params, ...options });
 }
 
 // 封装 POST 请求

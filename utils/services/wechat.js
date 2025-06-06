@@ -77,13 +77,15 @@ export async function wechatAuth() {
 		// 	'&response_type=code' +
 		// 	'&scope=snsapi_base';
 			
-			
-			
-        // const authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${config.officialAccount.appId}&redirect_uri=${redirectUri}&response_type=code&scope=${config.officialAccount.scope}`; 
-		
-		const authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${config.officialAccount.appId}&redirect_uri=http://www.cocoyam.cn&response_type=code&scope=${config.officialAccount.scope}&state=${config.officialAccount.state}#wechat_redirect`;
+		// 定向到前端url， 获取请求参数里的code 然后发送到后端http://277fbfd6.cpolar.top/user/wechat-login/?code={code}。
+		//http://767842ijj.cpolar.top 后面加路径，用路径去管理？然后通过路径访问到的东西避让说发了一个请求参数code,把code 获取了通过axios 发到后端接口。
+		const authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${config.officialAccount.appId}&redirect_uri=http://767842ijj.cpolar.top&response_type=code&scope=${config.officialAccount.scope}`;
+        //const authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${config.officialAccount.appId}&redirect_uri=${redirectUri}&response_type=code&scope=${config.officialAccount.scope}`; 
+		//const authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${config.officialAccount.appId}&redirect_uri=http://277fbfd6.cpolar.top/user/wechat-login/&response_type=code&scope=${config.officialAccount.scope}&state=${config.officialAccount.state}#wechat_redirect`;
+		//const authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${config.officialAccount.appId}&redirect_uri=http://www.cocoyam.cn&response_type=code&scope=${config.officialAccount.scope}&state=${config.officialAccount.state}#wechat_redirect`;
 		console.log(window.location.href,'window.location.href')
-        window.location.href = authUrl;
+        console.log('生成的微信授权链接:', authUrl);
+        window.location.href = authUrl;// 改成异步请求、
         return null;
     }
 	
@@ -93,7 +95,7 @@ export async function wechatAuth() {
         const tokenResponse = await get(config.api.getAccessToken, { code }); // 获取code
         // 保存用户信息
         console.log(tokenResponse.openid, 'tokenResponse');
-        localStorage.setItem('token', tokenResponse.openid); // 赋值
+        localStorage.setItem('token', tokenResponse.access_token); // 赋值
 
         saveUserInfo(tokenResponse);
         return tokenResponse;

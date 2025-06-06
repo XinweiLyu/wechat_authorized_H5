@@ -19,9 +19,9 @@
     </view>
     <view class="actions">
       <button @click="viewHistory">查看历史检测记录</button>
-      <button @click="viewPdfReport">查看PDF报告</button>
+      <!-- <button @click="viewPdfReport">查看PDF报告</button> -->
       <!-- <button @click="goToAIChat">AI心理治疗师</button> -->
-      <button @click="handleGetUserinfo">请求按钮</button>
+      <!-- <button @click="handleGetUserinfo">请求按钮</button> -->
       <!-- <button @click="goToDifyChatbot">Dify 聊天机器人</button> -->
     </view>
     <div id="ai-chat"></div>
@@ -55,8 +55,7 @@ export default {
     };
   },
   onLoad() {
-    //this.initializeAuth();
-    // this.fetchReportList(); // 新增：获取报告列表
+    this.initializeAuth();
   },
 
   //  mounted() {
@@ -111,49 +110,14 @@ export default {
         url: '/pages/patient/history',
       });
     },
-    // viewHistory() {
-    //   uni.navigateTo({
-    //     url: '/pages/index/historyRecords/historyRecords',
-    //   });
-    // },
-
-    // viewPdfReport() {
-    //   // 实现查看PDF报告的逻辑
-    //   uni.showToast({
-    //     title: '功能开发中',
-    //     icon: 'none',
-    //   });
-    // },
-    // viewPdfReport() {
-    //     // 使用本地PDF文件作为占位符
-    //     const filePath = '/static/report.pdf';
-    //     wx.openDocument({
-    //       filePath: filePath,
-    //       success: function (res) {
-    //         console.log('打开文档成功');
-    //       },
-    //       fail: function (err) {
-    //         console.error('打开文档失败', err);
-    //       }
-    //     });
-    //   },
-
+    
+    // 将接口传给后端
     handleGetUserinfo() {
       const { code } = getUrlParams();
       getUserInfo(code);
     },
 
-    // showAIChat() {
-    //   // 此方法已废弃，不再使用
-    // },
-    // initAIChat() {
-    //   // 此方法已废弃，不再使用
-    // },
-    // goToAIChat() {
-    //   uni.navigateTo({
-    //     url: '/pages/aiChat/aiChat'
-    //   });
-    // },
+    
 
     // initAIChatSDK() {
     //   if (!window.CozeWebSDK) {
@@ -188,11 +152,7 @@ export default {
     //   });
     // }
 
-    // goToDifyChatbot() {
-    //   uni.navigateTo({
-    //     url: '/pages/dify/dify'
-    //   });
-    // },
+
 
     async fetchReportList() {
       try {
@@ -207,7 +167,7 @@ export default {
 
     viewReport(item) {
       window.open(
-        `http://22c4da7.r9.cpolar.top/report/wechat-export/?report_id=${item.id}`
+        `http://277fbfd6.cpolar.top/report/wechat-export/?report_id=${item.id}`
       );
     },
   },

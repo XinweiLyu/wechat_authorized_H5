@@ -13,6 +13,14 @@
         "navigationBarTitleText": "检测记录"
       }
     },
+	
+	{
+	  "path": "pages/dify/difydemo3",
+	  "style": {
+	    "navigationBarTitleText": "dify"
+	  }
+	},
+	
     {
       "path": "pages/patient/pdf",
       "style": {

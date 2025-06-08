@@ -5,15 +5,12 @@
 </template>
 
 <script>
-import { getUserList, getUserPdf } from '@/api/patient.js';
-import pdfWorker from 'pdfjs-dist/build/pdf.worker';
 import axios from 'axios';
-import getConfig from '@/utils/services/config.js';
-import * as pdfjsViewer from 'pdfjs-dist/build/pdf';
+import * as pdfjsLib from 'pdfjs-dist/build/pdf';
 import 'pdfjs-dist/web/pdf_viewer.css';
-import * as PDF from 'pdfjs-dist';
-window.pdfjsWorker = import('pdfjs-dist/build/pdf.worker.entry.js');
-pdfjsViewer.GlobalWorkerOptions.workerSrc = pdfWorker;
+
+// 一定要在 getDocument 之前设置 workerSrc
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/static/pdf.worker.min.js';
 
 export default {
   name: '',
@@ -29,88 +26,55 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.handleReport();
-	  this.$forceUpdate();
+      this.$forceUpdate();
     });
-
-  
   },
   methods: {
-    handleReport() {
-      axios({
-        method: 'get',
-        url: `http://277fbfd6.cpolar.top/report/wechat-export/`,
-        params: { report_id: this.userId },
-        responseType: 'arraybuffer',
-        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
-      })
-        .then(async response => {
-          const blob = new Blob([response.data], {
-            type: 'application/pdf',
-          });
-          var url = URL.createObjectURL(blob);
-          const loadingTask = pdfjsViewer.getDocument({
-            url,
-
-            cMapUrl: '/public/cmaps/',
-            // TODO pro env
-            // cMapUrl: '/cmaps/',
-            cMapPacked: true,
-          });
-          const temp = await pdfjsViewer.getDocument(url).promise;
-
-          const renderPdf = pageNum => {
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            const scale = 1.5;
-            loadingTask.promise.then(pdf => {
-              pdf.getPage(pageNum).then(page => {
-                const viewport = page.getViewport({ scale });
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-                const renderContext = {
-                  canvasContext: context,
-                  viewport: viewport,
-                };
-                const renderTask = page.render(renderContext);
-              });
-            });
-            const container = document.getElementById('container');
-            container.appendChild(canvas);
-            loadingTask.promise.then(pdf => {
-              pdf.getPage(pageNum).then(page => {
-                const textlayer = document.createElement('div');
-                textlayer.className = 'textLayer';
-                container.appendChild(textlayer);
-                const viewport = page.getViewport({ scale });
-                page
-                  .getTextContent()
-                  .then(textContent => {
-                    const textlayer = document.createElement('div');
-                    textlayer.className = 'textLayer';
-                    container.appendChild(textlayer);
-
-                    pdfjsViewer.renderTextLayer({
-                      textContentSource: textContent,
-                      container: textlayer,
-                      viewport: viewport,
-                      textDivs: [],
-                    });
-                  })
-                  .catch(error => {
-                    // console.error('Failed to retrieve text content:', error);
-                    // 这里可以添加额外的错误处理逻辑，比如显示一个错误消息给用户
-                  });
-              });
-            });
-          };
-
-          for (let i = 1; i <= temp.numPages; i++) {
-            renderPdf(i);
-          }
-        })
-        .catch(error => {
-          console.log(error);
+    async handleReport() {
+      try {
+        const response = await axios({
+          method: 'get',
+          url: `http://277fbfd6.cpolar.top/report/wechat-export/`,
+          params: { report_id: this.userId },
+          responseType: 'arraybuffer',
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
         });
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const loadingTask = pdfjsLib.getDocument({
+          url,
+          cMapUrl: '/public/cmaps/',
+          cMapPacked: true,
+        });
+        const pdf = await loadingTask.promise;
+        const container = document.getElementById('container');
+        // 清空容器
+        container.innerHTML = '';
+        const scale = 1.5;
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale });
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          container.appendChild(canvas);
+          await page.render({ canvasContext: context, viewport }).promise;
+          // 渲染文本层（可选）
+          const textContent = await page.getTextContent();
+          const textLayerDiv = document.createElement('div');
+          textLayerDiv.className = 'textLayer';
+          container.appendChild(textLayerDiv);
+          pdfjsLib.renderTextLayer({
+            textContent: textContent,
+            container: textLayerDiv,
+            viewport: viewport,
+            textDivs: [],
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
   computed: {},
